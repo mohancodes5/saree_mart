@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 560px;">
+  <h1 class="h4 fw-bold mb-3">Your profile</h1>
+  <div class="bg-white rounded-4 shadow-sm p-4 border">
+    <p class="mb-1"><strong>Username:</strong> {{ user.username }}</p>
+    <p class="mb-1"><strong>Email:</strong> {{ user.email|default:"—" }}</p>
+    <p class="mb-0"><strong>Phone:</strong> {{ user.phone|default:"—" }}</p>
+  </div>
+</div>
+{% endblock %}
