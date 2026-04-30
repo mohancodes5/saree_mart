@@ -36,7 +36,7 @@
             <div class="border-bottom product-image-wrap bg-light">
               {% with img=p.images.first %}
                 {% if img %}
-                  <img src="{{ img.image.url }}" alt="{{ p.name }}" class="w-100 h-100" loading="lazy">
+                  <img src="{{ img.image.url }}" alt="{{ p.name }}" loading="lazy">
                 {% else %}
                   <div class="d-flex align-items-center justify-content-center w-100 h-100 text-muted small bg-light" style="font-family: 'Playfair Display', serif; font-style: italic;">No image</div>
                 {% endif %}
