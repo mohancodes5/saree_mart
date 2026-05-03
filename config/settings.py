@@ -20,7 +20,7 @@ SECRET_KEY = "django-insecure-uvs)rc^q_zn0%r&i#-ibltub&)9nm4c)4d(l7%z7gqh1q1@5t!
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1","*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -69,10 +69,10 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "store",
-        "USER": "postgres",
-        "PASSWORD": "mohan@123",
-        "HOST": "localhost",
+        "NAME": "store_0ocg",
+        "USER": "store_0ocg_user",
+        "PASSWORD": "NmPhLZ80wIBNbsSfFMYGK1Xnm67Pqoun",
+        "HOST": "dpg-d7ri4qt7vvec738obk9g-a.oregon-postgres.render.com",
         "PORT": "5432",
     }
 }
