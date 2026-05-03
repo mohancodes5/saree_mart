@@ -2,6 +2,8 @@
 Django settings for Saree Store (monolithic, templates + Bootstrap 5).
 """
 
+import os
+import dj_database_url
 from pathlib import Path
 
 from django.contrib.messages import constants as msg_constants
@@ -16,9 +18,9 @@ MESSAGE_TAGS = {
     msg_constants.ERROR: "danger",
 }
 
-SECRET_KEY = "django-insecure-uvs)rc^q_zn0%r&i#-ibltub&)9nm4c)4d(l7%z7gqh1q1@5t!"
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uvs)rc^q_zn0%r&i#-ibltub&)9nm4c)4d(l7%z7gqh1q1@5t!')
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1","*"]
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -67,14 +70,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "store_0ocg",
-        "USER": "store_0ocg_user",
-        "PASSWORD": "NmPhLZ80wIBNbsSfFMYGK1Xnm67Pqoun",
-        "HOST": "dpg-d7ri4qt7vvec738obk9g-a.oregon-postgres.render.com",
-        "PORT": "5432",
-    }
+    'default': dj_database_url.parse(
+        os.environ.get("DATABASE_URL", "postgresql://store_0ocg_user:NmPhLZ80wIBNbsSfFMYGK1Xnm67Pqoun@dpg-d7ri4qt7vvec738obk9g-a.oregon-postgres.render.com/store_0ocg")
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -92,7 +90,7 @@ USE_TZ = True
 # Leading slashes so browser resolves /media/... from any page (fixes broken product images).
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
