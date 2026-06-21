@@ -4,9 +4,9 @@ from django.urls import include, path
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    # Old /admin/ bookmarks -> custom admin (Django admin UI is disabled).
     path("admin/", RedirectView.as_view(url="/manage/", permanent=False)),
     path("manage/", include("staff_admin.urls")),
+    path("accounts/", include("allauth.urls")), # allauth URLs first to override if needed
     path("accounts/", include("accounts.urls")),
     path("dashboard/", include("dashboard.urls")),
     path("", include("shop.urls")),

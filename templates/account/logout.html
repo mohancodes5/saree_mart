@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Sign out — SareeMart{% endblock %}
+{% block extra_css %}
+<style>
+  .auth-page {
+    min-height: calc(100vh - 120px);
+    padding: 4rem 0;
+    background: radial-gradient(circle at top left, rgba(197, 160, 89, 0.18), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(122, 25, 52, 0.1), transparent 25%),
+                var(--ms-bg);
+  }
+  .auth-card {
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 35px 80px rgba(35, 35, 35, 0.08);
+    border: 1px solid rgba(234, 230, 225, 0.8);
+    padding: 2.4rem;
+  }
+  .auth-card h1 {
+    font-size: clamp(2rem, 2.6vw, 2.6rem);
+  }
+  .auth-card p {
+    color: var(--ms-text-muted);
+  }
+  .btn-ms-secondary {
+    border: 1px solid var(--ms-border);
+    color: var(--ms-text);
+    background: #fff;
+  }
+  .btn-ms-secondary:hover {
+    background: rgba(122, 25, 52, 0.05);
+    color: var(--ms-primary);
+  }
+  @media (max-width: 991px) {
+    .auth-page {
+      padding: 2.5rem 0;
+    }
+  }
+</style>
+{% endblock %}
+{% block content %}
+<main class="auth-page">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="auth-card text-center">
+          <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-3">Secure sign out</span>
+          <h1 class="fw-bold mb-3">Sign out of SareeMart</h1>
+          {% if user.is_authenticated %}
+            <p class="lead text-muted mb-4">Ready to leave? Click the button below to securely sign out of your account.</p>
+            <form method="post" class="mb-3">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-ms-primary w-100 py-2 rounded-pill">Sign out</button>
+            </form>
+          {% else %}
+            <p class="lead text-muted mb-4">You are not currently signed in. Use the button below to return to the store.</p>
+          {% endif %}
+          <a href="{% url 'shop:home' %}" class="btn btn-ms-secondary w-100 py-2 rounded-pill">Return to homepage</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

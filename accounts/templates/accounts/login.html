@@ -1,41 +1,117 @@
 {% extends "base.html" %}
+{% load socialaccount %}
 {% block title %}Sign in — SareeMart{% endblock %}
+{% block extra_css %}
+<style>
+  .auth-page {
+    min-height: calc(100vh - 120px);
+    padding: 4rem 0;
+    background: radial-gradient(circle at top left, rgba(197, 160, 89, 0.18), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(122, 25, 52, 0.1), transparent 25%),
+                var(--ms-bg);
+  }
+  .auth-card {
+    border-radius: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 35px 80px rgba(35, 35, 35, 0.08);
+    border: 1px solid rgba(234, 230, 225, 0.8);
+    padding: 2.2rem;
+  }
+  .auth-card .form-label {
+    font-weight: 600;
+    color: var(--ms-text);
+  }
+  .auth-card input,
+  .auth-card select,
+  .auth-card textarea {
+    width: 100%;
+    border-radius: 1rem;
+    border: 1px solid var(--ms-border);
+    background: #fff;
+    padding: 1rem 1.1rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .auth-card input:focus,
+  .auth-card select:focus,
+  .auth-card textarea:focus {
+    outline: none;
+    border-color: rgba(197, 160, 89, 0.6);
+    box-shadow: 0 0 0 0.2rem rgba(197, 160, 89, 0.16);
+  }
+  .auth-card .form-check-input {
+    width: auto;
+  }
+  .auth-card .social-btn {
+    border: 1px solid var(--ms-border);
+    background: #fff;
+    color: var(--ms-text);
+  }
+  .auth-card .social-btn:hover {
+    border-color: var(--ms-primary);
+    color: var(--ms-primary);
+    background: rgba(122, 25, 52, 0.03);
+  }
+  .auth-separator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.75rem 0;
+  }
+  .auth-separator::before,
+  .auth-separator::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(45, 45, 45, 0.08);
+  }
+  @media (max-width: 991px) {
+    .auth-page {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+  }
+</style>
+{% endblock %}
 {% block content %}
-<div class="container py-5" style="max-width: 440px;">
-  <h1 class="h4 fw-bold mb-2">Sign in</h1>
-  {% with next=request.GET.next|default:"" %}
-  <p class="small text-muted mb-3">
-    {% if next %}
-      {% if '/manage' in next %}Administrator sign-in{% else %}Continue where you left off{% endif %}
-    {% else %}
-      Pick <strong>User login</strong> for shopping, or <strong>Admin login</strong> for the store dashboard (staff accounts only).
-    {% endif %}
-  </p>
-
-  <div class="d-flex gap-2 mb-4">
-    <a href="{% url 'accounts:login' %}" class="btn btn-sm flex-grow-1 rounded-pill {% if not next %}btn-dark{% else %}btn-outline-secondary{% endif %}">User login</a>
-    <a href="{% url 'accounts:login' %}?next=/manage/" class="btn btn-sm flex-grow-1 rounded-pill {% if '/manage' in next %}btn-dark{% else %}btn-outline-secondary{% endif %}">Admin login</a>
-  </div>
-  {% endwith %}
-
-  <div class="bg-white rounded-4 shadow-sm p-4 border">
-    <form method="post" action="">
-      {% csrf_token %}
-      {% if form.non_field_errors %}
-        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-      {% endif %}
-      <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input type="text" name="username" class="form-control" required autofocus value="{{ form.username.value|default:'' }}" autocomplete="username">
+<main class="auth-page">
+  <div class="container">
+    <div class="row gx-5 align-items-center justify-content-center">
+      <div class="col-lg-5 order-2 order-lg-1 mt-4 mt-lg-0">
+        <div class="auth-card">
+          <div class="text-center mb-4">
+            <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-2">Multiple Login Modes</span>
+            <h2 class="h4 fw-bold mb-1">Sign in</h2>
+            <p class="text-muted small mb-0">Choose either User login or Admin login, then continue to your dashboard.</p>
+          </div>
+          <form method="post" action="">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" name="username" class="form-control" required autofocus value="{{ form.username.value|default:'' }}" autocomplete="username">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required autocomplete="current-password">
+            </div>
+            <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+            <button type="submit" class="btn btn-ms-primary w-100 py-2 rounded-pill">Continue</button>
+          </form>
+          <div class="d-flex gap-2 mt-4">
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary w-100 rounded-pill {% if not request.GET.next %}active{% endif %}">User login</a>
+            <a href="{% url 'accounts:login' %}?next=/manage/" class="btn btn-outline-secondary w-100 rounded-pill {% if '/manage' in request.GET.next %}active{% endif %}">Admin login</a>
+          </div>
+          <p class="text-center text-muted small mt-4 mb-0">New shopper? <a href="{% url 'accounts:register' %}">Create an account</a></p>
+        </div>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" required autocomplete="current-password">
+      <div class="col-lg-5 order-1 order-lg-2 auth-hero">
+        <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-3">Welcome Back</span>
+        <h1 class="fw-bold mb-3">Sign in to your account.</h1>
+        <p class="lead text-muted">Use your credentials to continue shopping, manage orders, or access seller/admin features.</p>
       </div>
-      <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
-      <button type="submit" class="btn btn-ms-primary w-100 py-2 rounded-pill">Continue</button>
-    </form>
-    <p class="small text-muted mt-3 mb-0">New shopper? <a href="{% url 'accounts:register' %}">Create an account</a></p>
+    </div>
   </div>
-</div>
+</main>
 {% endblock %}

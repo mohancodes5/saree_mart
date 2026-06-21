@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load socialaccount %}
-{% block title %}Sign up — SareeMart{% endblock %}
+{% block title %}Sign in — SareeMart{% endblock %}
 {% block extra_css %}
 <style>
   .auth-page {
@@ -51,6 +51,13 @@
     color: var(--ms-primary);
     background: rgba(122, 25, 52, 0.03);
   }
+  .auth-hero h1 {
+    font-size: clamp(2.4rem, 2.6vw, 3.2rem);
+    line-height: 1.05;
+  }
+  .auth-hero p {
+    max-width: 42rem;
+  }
   .auth-separator {
     display: flex;
     align-items: center;
@@ -64,6 +71,10 @@
     height: 1px;
     background: rgba(45, 45, 45, 0.08);
   }
+  .auth-hero .badge {
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+  }
   @media (max-width: 991px) {
     .auth-page {
       padding-top: 2rem;
@@ -76,14 +87,26 @@
 <main class="auth-page">
   <div class="container">
     <div class="row gx-5 align-items-center justify-content-center">
-      <div class="col-lg-5 order-2 order-lg-1 mt-4 mt-lg-0">
+      <div class="col-lg-5 order-2 order-lg-1 mt-4 mt-lg-0 auth-hero">
+        <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-3">Premium Ethnic Wear</span>
+        <h1 class="fw-bold mb-3">Shop the finest sarees with confidence.</h1>
+        <p class="lead text-muted">Sign in to continue browsing designer sarees, tracking your orders, and accessing special offers curated just for you.</p>
+        <div class="mt-4">
+          <p class="mb-2 text-muted small">Need an account?</p>
+          <a class="btn btn-ms-outline rounded-pill px-4 py-2" href="{% url 'account_signup' %}">Create account</a>
+        </div>
+      </div>
+      <div class="col-lg-5 order-1 order-lg-2">
         <div class="auth-card">
           <div class="text-center mb-4">
-            <h2 class="h4 fw-bold mb-1">Create account</h2>
-            <p class="text-muted small mb-0">Register today to access premium sarees, exclusive offers, and faster checkout.</p>
+            <h2 class="h4 fw-bold mb-1">Sign in</h2>
+            <p class="text-muted small mb-0">Sign in using your username, email or social account.</p>
           </div>
-          <form method="post">
+          <form method="post" action="">
             {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
             {% for field in form %}
               <div class="mb-3">
                 <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -94,15 +117,10 @@
                 {% endif %}
               </div>
             {% endfor %}
-            <button type="submit" class="btn btn-ms-primary w-100 py-2 rounded-pill">Sign up</button>
+            <button type="submit" class="btn btn-ms-primary w-100 py-2 rounded-pill">Continue</button>
           </form>
-          <p class="text-center text-muted small mt-4 mb-0">Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+          <p class="text-center text-muted small mt-4 mb-0">New shopper? <a href="{% url 'account_signup' %}">Create an account</a></p>
         </div>
-      </div>
-      <div class="col-lg-5 order-1 order-lg-2 auth-hero">
-        <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-3">Welcome to SareeMart</span>
-        <h1 class="fw-bold mb-3">Register and discover your next saree.</h1>
-        <p class="lead text-muted">A quick sign up grants you access to curated cotton, silk, and designer saree collections.</p>
       </div>
     </div>
   </div>

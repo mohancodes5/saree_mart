@@ -19,6 +19,19 @@ class CustomerRegisterView(CreateView):
     template_name = "accounts/register.html"
     success_url = reverse_lazy("shop:home")
 
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get("email")
+        if email and User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            orders = user.orders.all()[:3]  # Get last 3 orders
+            if orders:
+                status_list = ", ".join([f"Order #{o.id}: {o.get_status_display()}" for o in orders])
+                messages.info(request, f"This email is already registered. Your recent order status: {status_list}. Please log in to see full details.")
+            else:
+                messages.info(request, "This email is already registered. You have no recent orders. Please log in.")
+            return redirect("accounts:login")
+        return super().post(request, *args, **kwargs)
+
     def form_valid(self, form):
         response = super().form_valid(form)
         from django.contrib.auth import login

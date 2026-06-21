@@ -4,6 +4,7 @@ Django settings for Saree Store (monolithic, templates + Bootstrap 5).
 
 import os
 import dj_database_url
+from decouple import config
 from pathlib import Path
 
 from django.contrib.messages import constants as msg_constants
@@ -18,11 +19,10 @@ MESSAGE_TAGS = {
     msg_constants.ERROR: "danger",
 }
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-uvs)rc^q_zn0%r&i#-ibltub&)9nm4c)4d(l7%z7gqh1q1@5t!')
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-
-ALLOWED_HOSTS = ["localhost", "127.0.0.1","*"]
+ALLOWED_HOSTS = ['*'] 
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -31,11 +31,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     "accounts",
     "shop",
     "dashboard",
     "staff_admin",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -46,6 +53,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -70,9 +78,10 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
-    'default': dj_database_url.parse(
-        os.environ.get("DATABASE_URL", "postgresql://store_0ocg_user:NmPhLZ80wIBNbsSfFMYGK1Xnm67Pqoun@dpg-d7ri4qt7vvec738obk9g-a.oregon-postgres.render.com/store_0ocg")
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -102,3 +111,24 @@ AUTH_USER_MODEL = "accounts.User"
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
